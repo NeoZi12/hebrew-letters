@@ -1,0 +1,1348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Hebrew Alphabet ♡</title>
+    <style>
+      /* ── Reset & Base ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #fff0f5;
+        --accent: #e8659a;
+        --accent2: #c94b8a;
+        --text: #4a2040;
+        --text-sub: #9b5f80;
+        --card: #ffffff;
+        --correct: #4caf7d;
+        --wrong: #e05252;
+        --reveal: #4caf7d;
+        --shadow: rgba(232, 101, 154, 0.15);
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: "Georgia", "Times New Roman", serif;
+        background: var(--bg);
+        color: var(--text);
+        overflow-x: hidden;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Subtle background hearts pattern */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ctext x='15' y='35' font-size='18' fill='%23E8659A' opacity='0.07'%3E%E2%99%A1%3C/text%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── Screens ── */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        min-height: 100dvh; /* fix mobile Safari address bar */
+        position: relative;
+        z-index: 1;
+      }
+      .screen.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── Shared Layout ── */
+      .container {
+        width: 100%;
+        max-width: 540px;
+        margin: 0 auto;
+        padding: 32px 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-block;
+        padding: 14px 28px;
+        border: none;
+        border-radius: 50px;
+        font-family: "Georgia", serif;
+        font-size: 1rem;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          box-shadow 0.15s,
+          background 0.15s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px var(--shadow);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        box-shadow: 0 4px 14px var(--shadow);
+      }
+      .btn-secondary {
+        background: #fff;
+        color: var(--accent2);
+        border: 2px solid var(--accent);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-sub);
+        font-size: 0.9rem;
+        padding: 8px 16px;
+      }
+      .btn-ghost:hover {
+        color: var(--accent2);
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* ── Animations ── */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes popIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.82);
+        }
+        60% {
+          transform: scale(1.04);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-6px);
+        }
+        40% {
+          transform: translateX(6px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.06);
+        }
+      }
+      @keyframes floatHeart {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-120px) scale(0.4);
+          opacity: 0;
+        }
+      }
+
+      .anim-fade {
+        animation: fadeIn 0.4s ease both;
+      }
+      .anim-pop {
+        animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+      }
+      .anim-shake {
+        animation: shake 0.4s ease;
+      }
+      .anim-pulse {
+        animation: pulse 0.35s ease;
+      }
+
+      /* ══════════════════════════════════════
+       HOME SCREEN
+    ══════════════════════════════════════ */
+      #screen-home {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .home-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        animation: fadeIn 0.5s ease both;
+      }
+
+      .home-emoji {
+        font-size: 3.5rem;
+        line-height: 1;
+      }
+
+      .home-title {
+        font-size: 2rem;
+        color: var(--text);
+        letter-spacing: -0.5px;
+      }
+
+      .home-sub {
+        color: var(--text-sub);
+        font-size: 1rem;
+        font-style: italic;
+        margin-top: -10px;
+      }
+
+      .home-letter-preview {
+        font-size: 5rem;
+        color: var(--accent);
+        line-height: 1;
+        direction: rtl;
+        text-shadow: 0 4px 16px var(--shadow);
+        margin: 8px 0;
+      }
+
+      .couple-photo {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid var(--accent);
+        box-shadow: 0 8px 32px var(--shadow);
+      }
+
+      .couple-photo-placeholder {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        border: 3px dashed var(--accent);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-sub);
+        font-size: 0.75rem;
+        gap: 6px;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        background: rgba(232, 101, 154, 0.05);
+      }
+      .couple-photo-placeholder:hover {
+        border-color: var(--accent2);
+        background: rgba(232, 101, 154, 0.1);
+      }
+      .couple-photo-placeholder .placeholder-icon {
+        font-size: 2rem;
+      }
+
+      .home-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        width: 100%;
+        max-width: 280px;
+        margin-top: 10px;
+      }
+
+      .home-buttons .btn {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 16px 28px;
+      }
+
+      .mode-icon {
+        margin-right: 8px;
+      }
+
+      /* ══════════════════════════════════════
+       STUDY SCREEN
+    ══════════════════════════════════════ */
+      #screen-study {
+        background: var(--bg);
+      }
+
+      .study-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 20px 20px 0;
+        max-width: 540px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .study-title {
+        font-size: 1.4rem;
+        color: var(--text);
+        flex: 1;
+      }
+
+      .study-sub {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        text-align: center;
+        padding: 0 20px 4px;
+        max-width: 540px;
+        margin: 0 auto;
+        width: 100%;
+        font-style: italic;
+      }
+
+      .letter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 14px;
+        padding: 16px 20px 32px;
+        max-width: 540px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .study-card {
+        background: var(--card);
+        border-radius: 16px;
+        padding: 18px 12px 14px;
+        text-align: center;
+        box-shadow: 0 4px 16px var(--shadow);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        cursor: default;
+      }
+      .study-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px var(--shadow);
+      }
+
+      .study-card .heb-char {
+        font-size: 2.8rem;
+        direction: rtl;
+        color: var(--accent2);
+        line-height: 1.1;
+        display: block;
+      }
+
+      .study-card .card-name {
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: var(--text);
+        margin-top: 8px;
+        display: block;
+      }
+
+      .study-card .card-sounds {
+        font-size: 0.78rem;
+        color: var(--text-sub);
+        margin-top: 4px;
+        display: block;
+        font-style: italic;
+      }
+
+      /* ══════════════════════════════════════
+       QUIZ SCREEN
+    ══════════════════════════════════════ */
+      #screen-quiz {
+      }
+
+      .quiz-topbar {
+        padding: 16px 20px 0;
+        max-width: 540px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      .quiz-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .quiz-counter {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+      }
+
+      .quiz-score-label {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+      }
+
+      .progress-track {
+        height: 6px;
+        background: #f0d0dc;
+        border-radius: 99px;
+        overflow: hidden;
+      }
+
+      #progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 99px;
+        transition: width 0.4s ease;
+      }
+
+      .quiz-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 20px 32px;
+        max-width: 540px;
+        margin: 0 auto;
+        width: 100%;
+        gap: 24px;
+      }
+
+      .letter-card {
+        background: var(--card);
+        border-radius: 24px;
+        padding: 32px 40px;
+        text-align: center;
+        box-shadow: 0 8px 32px var(--shadow);
+        width: 100%;
+      }
+
+      .letter-prompt {
+        font-size: 0.8rem;
+        color: var(--text-sub);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      #letter-display {
+        font-size: 7rem;
+        direction: rtl;
+        color: var(--accent2);
+        line-height: 1;
+        display: block;
+        font-family: "Times New Roman", "Arial Unicode MS", serif;
+      }
+
+      #answer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .answer-btn {
+        background: var(--card);
+        border: 2px solid #f0d0dc;
+        border-radius: 14px;
+        padding: 16px 12px;
+        font-family: "Georgia", serif;
+        font-size: 1rem;
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s,
+          transform 0.15s;
+        box-shadow: 0 2px 8px var(--shadow);
+      }
+      .answer-btn:hover:not(:disabled) {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px var(--shadow);
+      }
+      .answer-btn:disabled {
+        cursor: default;
+      }
+
+      .answer-btn.correct {
+        background: var(--correct);
+        border-color: var(--correct);
+        color: #fff;
+      }
+      .answer-btn.wrong {
+        background: var(--wrong);
+        border-color: var(--wrong);
+        color: #fff;
+      }
+      .answer-btn.reveal {
+        background: var(--correct);
+        border-color: var(--correct);
+        color: #fff;
+      }
+
+      .back-link {
+        align-self: flex-start;
+        margin: 8px 0 0 0;
+      }
+
+      /* ══════════════════════════════════════
+       RESULTS SCREEN
+    ══════════════════════════════════════ */
+      #screen-results {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .results-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        padding: 40px 20px;
+        animation: fadeIn 0.5s ease both;
+        max-width: 380px;
+        margin: 0 auto;
+      }
+
+      .results-emoji {
+        font-size: 3rem;
+      }
+
+      .results-title {
+        font-size: 1.8rem;
+        color: var(--text);
+      }
+
+      .score-circle {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 32px var(--shadow);
+        color: #fff;
+      }
+
+      .score-number {
+        font-size: 3rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .score-label {
+        font-size: 0.8rem;
+        opacity: 0.85;
+        letter-spacing: 1px;
+      }
+
+      .results-message {
+        font-size: 1rem;
+        color: var(--text-sub);
+        font-style: italic;
+        max-width: 280px;
+        line-height: 1.5;
+      }
+
+      .results-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      .results-buttons .btn {
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      /* ══════════════════════════════════════
+       SECRET QUESTION SCREENS
+    ══════════════════════════════════════ */
+      #screen-secret,
+      #screen-secret-yes {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .secret-inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+        padding: 40px 20px;
+        max-width: 380px;
+        margin: 0 auto;
+        animation: fadeIn 0.4s ease both;
+      }
+
+      .secret-heading {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-style: italic;
+      }
+
+      .secret-question {
+        font-size: 1.6rem;
+        color: var(--text);
+        line-height: 1.35;
+      }
+
+      .secret-answer-buttons {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        min-height: 60px;
+      }
+
+      .btn-no {
+        background: transparent;
+        border: 2px solid #ccc;
+        color: #999;
+        font-family: "Georgia", serif;
+        font-size: 1rem;
+        padding: 12px 28px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .btn-no:hover {
+        border-color: #bbb;
+      }
+
+      .btn-secret {
+        background: transparent;
+        border: 2px solid var(--accent);
+        color: var(--accent2);
+        font-size: 0.95rem;
+      }
+      .btn-secret:hover {
+        background: rgba(232, 101, 154, 0.08);
+      }
+
+      .secret-yes-emoji {
+        font-size: 3.5rem;
+      }
+
+      .secret-yes-title {
+        font-size: 1.7rem;
+        color: var(--text);
+      }
+
+      .secret-yes-sub {
+        font-size: 1rem;
+        color: var(--text-sub);
+        font-style: italic;
+      }
+
+      /* ══════════════════════════════════════
+       FLOATING HEARTS (results celebration)
+    ══════════════════════════════════════ */
+      .hearts-container {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 0;
+      }
+
+      .heart-particle {
+        position: absolute;
+        bottom: 0;
+        font-size: 1.5rem;
+        opacity: 0;
+        animation: floatHeart 2.4s ease-out forwards;
+      }
+
+      /* ══════════════════════════════════════
+       RESPONSIVE — iPhone & small screens
+    ══════════════════════════════════════ */
+
+      /* Safe-area padding for notch / home indicator */
+      #screen-home {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #screen-quiz {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #screen-study {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #screen-results {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #screen-secret {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      #screen-secret-yes {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      /* All iPhones (up to iPhone 14 Pro Max width) */
+      @media (max-width: 430px) {
+        .home-inner {
+          gap: 14px;
+        }
+        .home-title {
+          font-size: 1.7rem;
+        }
+        .home-letter-preview {
+          font-size: 3.5rem;
+        }
+        .home-sub {
+          font-size: 0.9rem;
+        }
+
+        .couple-photo,
+        .couple-photo-placeholder {
+          width: 170px;
+          height: 170px;
+        }
+
+        .home-buttons {
+          max-width: 260px;
+        }
+        .home-buttons .btn {
+          font-size: 1rem;
+          padding: 14px 20px;
+        }
+
+        .quiz-topbar {
+          padding: 12px 16px 0;
+        }
+        .quiz-body {
+          padding: 14px 16px 20px;
+          gap: 16px;
+        }
+
+        .letter-card {
+          padding: 22px 20px;
+        }
+        #letter-display {
+          font-size: 5rem;
+        }
+
+        .answer-btn {
+          padding: 14px 8px;
+          font-size: 0.95rem;
+        }
+
+        .results-inner {
+          padding: 24px 16px;
+          gap: 14px;
+        }
+        .results-title {
+          font-size: 1.5rem;
+        }
+        .results-message {
+          font-size: 0.9rem;
+        }
+        .score-circle {
+          width: 120px;
+          height: 120px;
+        }
+        .score-number {
+          font-size: 2.4rem;
+        }
+
+        .secret-inner {
+          padding: 24px 16px;
+          gap: 16px;
+        }
+        .secret-question {
+          font-size: 1.35rem;
+        }
+        .secret-yes-title {
+          font-size: 1.4rem;
+        }
+
+        .study-header {
+          padding: 14px 16px 0;
+        }
+        .study-sub {
+          padding: 0 16px 4px;
+        }
+        .letter-grid {
+          grid-template-columns: repeat(3, 1fr);
+          padding: 12px 16px 24px;
+          gap: 10px;
+        }
+        .study-card {
+          padding: 14px 8px 10px;
+        }
+        .study-card .heb-char {
+          font-size: 2.2rem;
+        }
+        .study-card .card-name {
+          font-size: 0.82rem;
+        }
+        .study-card .card-sounds {
+          font-size: 0.7rem;
+        }
+      }
+
+      /* iPhone SE / very small (375px and below) */
+      @media (max-width: 375px) {
+        .home-title {
+          font-size: 1.5rem;
+        }
+        .home-letter-preview {
+          font-size: 3rem;
+        }
+        .couple-photo,
+        .couple-photo-placeholder {
+          width: 150px;
+          height: 150px;
+        }
+        #letter-display {
+          font-size: 4.5rem;
+        }
+        .letter-card {
+          padding: 18px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════ HOME ═══════════════ -->
+    <div id="screen-home" class="screen active">
+      <div class="home-inner">
+        <div class="home-emoji">✡️</div>
+        <h1 class="home-title">Hey Bruna! ♡</h1>
+        <p class="home-sub">I made this just for you tembelit</p>
+        <div class="home-letter-preview">אבג</div>
+
+        <!-- Replace "photo.jpg" with your image filename (put the file in the same folder) -->
+        <img
+          src="photo.jpeg"
+          alt="Us ♡"
+          class="couple-photo"
+          onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'flex';
+          "
+        />
+        <div
+          class="couple-photo-placeholder"
+          style="display: none"
+          title="Add a photo named photo.jpg to this folder"
+        >
+          <span class="placeholder-icon">📷</span>
+          <span>Add photo.jpg</span>
+        </div>
+
+        <div class="home-buttons">
+          <button class="btn btn-primary" onclick="showStudy()">
+            <span class="mode-icon">📖</span> Study Mode
+          </button>
+          <button class="btn btn-secondary" onclick="startQuiz()">
+            <span class="mode-icon">✏️</span> Quiz Mode
+          </button>
+          <button class="btn btn-secret" onclick="showSecret()">
+            💌 Secret Question
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ STUDY ═══════════════ -->
+    <div id="screen-study" class="screen">
+      <div class="study-header">
+        <button
+          class="btn btn-ghost back-link"
+          onclick="showScreen('screen-home')"
+        >
+          ← Back
+        </button>
+        <h2 class="study-title">Study the Alphabet</h2>
+      </div>
+      <p class="study-sub">All 22 Hebrew letters — take your time, Bruna ♡</p>
+      <div class="letter-grid" id="study-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- ═══════════════ QUIZ ═══════════════ -->
+    <div id="screen-quiz" class="screen">
+      <div class="quiz-topbar">
+        <div class="quiz-meta">
+          <button
+            class="btn btn-ghost"
+            style="padding: 4px 0"
+            onclick="showScreen('screen-home')"
+          >
+            ← Home
+          </button>
+          <span class="quiz-counter"
+            >Question <span id="q-num">1</span> of 22</span
+          >
+          <span class="quiz-score-label"
+            >Score: <span id="q-score">0</span></span
+          >
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar"></div>
+        </div>
+      </div>
+
+      <div class="quiz-body">
+        <div class="letter-card" id="letter-card">
+          <p class="letter-prompt">What is this letter called?</p>
+          <span id="letter-display">א</span>
+        </div>
+
+        <div id="answer-grid">
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ RESULTS ═══════════════ -->
+    <div id="screen-results" class="screen">
+      <div class="hearts-container" id="hearts-container"></div>
+      <div class="results-inner">
+        <img
+          id="results-photo"
+          src=""
+          alt="♡"
+          class="couple-photo"
+          style="display: none"
+          onerror="this.style.display = 'none'"
+        />
+        <div class="results-emoji" id="results-emoji">🌸</div>
+        <h2 class="results-title">Quiz Complete!</h2>
+        <div class="score-circle">
+          <span class="score-number" id="final-score">0</span>
+          <span class="score-label">out of 100</span>
+        </div>
+        <p class="results-message" id="results-message"></p>
+        <div class="results-buttons">
+          <button class="btn btn-primary" onclick="startQuiz()">
+            ✏️ Try Again
+          </button>
+          <button class="btn btn-secondary" onclick="showStudy()">
+            📖 Study Mode
+          </button>
+          <button class="btn btn-ghost" onclick="showScreen('screen-home')">
+            🏠 Home
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SECRET QUESTION ═══════════════ -->
+    <div id="screen-secret" class="screen">
+      <div class="secret-inner">
+        <button
+          class="btn btn-ghost"
+          onclick="showScreen('screen-home')"
+          style="align-self: flex-start; margin-left: -8px"
+        >
+          ← Back
+        </button>
+
+        <img
+          src="secret.jpeg"
+          alt="Us ♡"
+          class="couple-photo"
+          onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'flex';
+          "
+        />
+        <div class="couple-photo-placeholder" style="display: none">
+          <span class="placeholder-icon">📷</span>
+          <span>Add secret.jpeg</span>
+        </div>
+
+        <p class="secret-heading">A very important question...</p>
+        <p class="secret-question">Am I the best boyfriend ever? 🥺</p>
+
+        <div class="secret-answer-buttons">
+          <button class="btn btn-primary" onclick="answerYes()">Yes ♡</button>
+          <button class="btn-no" id="btn-no" onclick="escapeNoButton()">
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ SECRET YES ANSWER ═══════════════ -->
+    <div id="screen-secret-yes" class="screen">
+      <div class="hearts-container" id="hearts-container-secret"></div>
+      <div class="secret-inner">
+        <img
+          src="secret2.jpeg"
+          alt="Us ♡"
+          class="couple-photo"
+          onerror="
+            this.style.display = 'none';
+            this.nextElementSibling.style.display = 'flex';
+          "
+        />
+        <div class="couple-photo-placeholder" style="display: none">
+          <span class="placeholder-icon">📷</span>
+          <span>Add secret2.jpeg</span>
+        </div>
+
+        <div class="secret-yes-emoji">🥰</div>
+        <h2 class="secret-yes-title">Thank you! so full of love!!!</h2>
+        <p class="secret-yes-sub">I knew it ♡</p>
+
+        <button
+          class="btn btn-primary"
+          onclick="showScreen('screen-home')"
+          style="margin-top: 8px"
+        >
+          🏠 Home
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // ── Data ──────────────────────────────────────────────────────────────────
+      const HEBREW_LETTERS = [
+        { letter: "א", name: "Alef", sounds: "a" },
+        { letter: "ב", name: "Bet", sounds: "b / v" },
+        { letter: "ג", name: "Gimel", sounds: "g" },
+        { letter: "ד", name: "Daled", sounds: "d" },
+        { letter: "ה", name: "Hey", sounds: "h" },
+        { letter: "ו", name: "Vav", sounds: "v / u / o" },
+        { letter: "ז", name: "Zayin", sounds: "z" },
+        { letter: "ח", name: "Het", sounds: "h" },
+        { letter: "ט", name: "Tet", sounds: "t" },
+        { letter: "י", name: "Yood", sounds: "y/i" },
+        { letter: "כ", name: "Kaf", sounds: "k" },
+        { letter: "ל", name: "Lamed", sounds: "l" },
+        { letter: "מ", name: "Mem", sounds: "m" },
+        { letter: "נ", name: "Nun", sounds: "n" },
+        { letter: "ס", name: "Samech", sounds: "s" },
+        { letter: "ע", name: "Ayin", sounds: "a but different tone" },
+        { letter: "פ", name: "Pe", sounds: "p / f" },
+        { letter: "צ", name: "Tsadik", sounds: "ts" },
+        { letter: "ק", name: "Koof", sounds: "k/q" },
+        { letter: "ר", name: "Resh", sounds: "r" },
+        { letter: "ש", name: "Shin", sounds: "sh / s" },
+        { letter: "ת", name: "Taf", sounds: "t" },
+      ];
+
+      // ── State ─────────────────────────────────────────────────────────────────
+      const state = {
+        deck: [],
+        currentIndex: 0,
+        score: 0,
+        answered: false,
+      };
+
+      // ── Utilities ─────────────────────────────────────────────────────────────
+      function shuffle(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function showScreen(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      // ── Study Mode ────────────────────────────────────────────────────────────
+      function showStudy() {
+        const grid = document.getElementById("study-grid");
+        if (!grid.children.length) {
+          // Build cards once
+          HEBREW_LETTERS.forEach((entry, i) => {
+            const card = document.createElement("div");
+            card.className = "study-card";
+            card.style.animationDelay = i * 30 + "ms";
+            card.innerHTML = `
+            <span class="heb-char">${entry.letter}</span>
+            <span class="card-name">${entry.name}</span>
+            <span class="card-sounds">${entry.sounds}</span>
+          `;
+            grid.appendChild(card);
+          });
+        }
+        showScreen("screen-study");
+        // Animate cards in
+        document.querySelectorAll(".study-card").forEach((c, i) => {
+          c.style.animation = "none";
+          c.style.opacity = "0";
+          setTimeout(() => {
+            c.style.animation = `fadeIn 0.35s ease ${i * 25}ms both`;
+          }, 10);
+        });
+      }
+
+      // ── Quiz Mode ─────────────────────────────────────────────────────────────
+      function generateOptions(correctEntry) {
+        const pool = HEBREW_LETTERS.filter((l) => l.name !== correctEntry.name);
+        const distractors = shuffle(pool).slice(0, 3);
+        return shuffle([correctEntry, ...distractors]);
+      }
+
+      function startQuiz() {
+        state.deck = shuffle(HEBREW_LETTERS);
+        state.currentIndex = 0;
+        state.score = 0;
+        state.answered = false;
+        showScreen("screen-quiz");
+        renderQuestion();
+      }
+
+      function renderQuestion() {
+        const entry = state.deck[state.currentIndex];
+        const options = generateOptions(entry);
+
+        // Update header
+        document.getElementById("q-num").textContent = state.currentIndex + 1;
+        document.getElementById("q-score").textContent = state.score;
+
+        // Update progress bar
+        const pct = (state.currentIndex / HEBREW_LETTERS.length) * 100;
+        document.getElementById("progress-bar").style.width = pct + "%";
+
+        // Update letter with pop-in animation
+        const display = document.getElementById("letter-display");
+        display.textContent = entry.letter;
+        const card = document.getElementById("letter-card");
+        card.classList.remove("anim-pop");
+        void card.offsetWidth; // force reflow
+        card.classList.add("anim-pop");
+
+        // Update answer buttons
+        const buttons = document.querySelectorAll(".answer-btn");
+        buttons.forEach((btn, i) => {
+          btn.textContent = options[i].name;
+          btn.dataset.name = options[i].name;
+          btn.className = "answer-btn";
+          btn.disabled = false;
+        });
+
+        state.answered = false;
+      }
+
+      function handleAnswer(btn) {
+        if (state.answered) return;
+        state.answered = true;
+
+        const correct = state.deck[state.currentIndex];
+        const isCorrect = btn.dataset.name === correct.name;
+        const buttons = document.querySelectorAll(".answer-btn");
+
+        // Disable all buttons immediately
+        buttons.forEach((b) => (b.disabled = true));
+
+        if (isCorrect) {
+          state.score++;
+          btn.classList.add("correct", "anim-pulse");
+        } else {
+          btn.classList.add("wrong", "anim-shake");
+          // Reveal correct answer
+          buttons.forEach((b) => {
+            if (b.dataset.name === correct.name) b.classList.add("reveal");
+          });
+        }
+
+        // Update score display immediately
+        document.getElementById("q-score").textContent = state.score;
+
+        setTimeout(advanceQuestion, isCorrect ? 1500 : 2500);
+      }
+
+      function advanceQuestion() {
+        state.currentIndex++;
+        if (state.currentIndex >= HEBREW_LETTERS.length) {
+          showResults();
+        } else {
+          renderQuestion();
+        }
+      }
+
+      // ── Results ───────────────────────────────────────────────────────────────
+      function showResults() {
+        const pct = Math.round((state.score / HEBREW_LETTERS.length) * 100);
+
+        document.getElementById("final-score").textContent = pct;
+
+        let emoji, message, photo;
+        if (pct >= 85) {
+          emoji = "🔥";
+          message =
+            "GOSTOSA EU TE AMO E A MAIS QUE TUDU NO MUNDO AAAAAAAAAAAAAAAAAAAA";
+          photo = "result4.jpeg";
+        } else if (pct >= 70) {
+          emoji = "🥰";
+          message = "goood jobbbb haim sheli!!!!";
+          photo = "result3.jpeg";
+        } else if (pct >= 55) {
+          emoji = "😏";
+          message = "Okayyyy not bad minha caiphirina";
+          photo = "result2.jpeg";
+        } else {
+          emoji = "😬";
+          message = "Terrible";
+          photo = "result1.jpeg";
+        }
+
+        document.getElementById("results-emoji").textContent = emoji;
+        document.getElementById("results-message").textContent = message;
+
+        const photoEl = document.getElementById("results-photo");
+        photoEl.src = photo;
+        photoEl.style.display = "block";
+
+        showScreen("screen-results");
+        launchHearts();
+      }
+
+      function launchHearts() {
+        const container = document.getElementById("hearts-container");
+        container.innerHTML = "";
+        const symbols = ["♡", "♡", "✿", "★", "♡"];
+        const colors = ["#E8659A", "#C94B8A", "#F4A0C0", "#D4A0D4", "#FFB3CF"];
+        for (let i = 0; i < 14; i++) {
+          const h = document.createElement("span");
+          h.className = "heart-particle";
+          h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          h.style.left = 5 + Math.random() * 90 + "%";
+          h.style.color = colors[Math.floor(Math.random() * colors.length)];
+          h.style.fontSize = 1 + Math.random() * 1.5 + "rem";
+          h.style.animationDelay = Math.random() * 1.2 + "s";
+          h.style.animationDuration = 1.8 + Math.random() * 1.2 + "s";
+          container.appendChild(h);
+        }
+      }
+
+      // ── Event Wiring ──────────────────────────────────────────────────────────
+      document.getElementById("answer-grid").addEventListener("click", (e) => {
+        const btn = e.target.closest(".answer-btn");
+        if (btn) handleAnswer(btn);
+      });
+
+      // ── Secret Question ────────────────────────────────────────────────────────
+      let noDir = 1; // 1 = right, -1 = left, alternates each click
+      let noBtnX = null; // tracked position — null means not initialized yet
+      let noBtnY = null;
+
+      function showSecret() {
+        const btn = document.getElementById("btn-no");
+        // Put the button back inside its original container
+        const container = document.querySelector(".secret-answer-buttons");
+        if (btn.parentElement !== container) container.appendChild(btn);
+        btn.style.position = "";
+        btn.style.left = "";
+        btn.style.top = "";
+        btn.style.display = "";
+        noDir = 1;
+        noBtnX = null;
+        noBtnY = null;
+        showScreen("screen-secret");
+      }
+
+      function answerYes() {
+        document.getElementById("btn-no").style.display = "none";
+        showScreen("screen-secret-yes");
+        // Launch hearts on the secret yes screen
+        const container = document.getElementById("hearts-container-secret");
+        container.innerHTML = "";
+        const symbols = ["♡", "♡", "✿", "★", "♡"];
+        const colors = ["#E8659A", "#C94B8A", "#F4A0C0", "#D4A0D4", "#FFB3CF"];
+        for (let i = 0; i < 18; i++) {
+          const h = document.createElement("span");
+          h.className = "heart-particle";
+          h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          h.style.left = 5 + Math.random() * 90 + "%";
+          h.style.color = colors[Math.floor(Math.random() * colors.length)];
+          h.style.fontSize = 1 + Math.random() * 1.8 + "rem";
+          h.style.animationDelay = Math.random() * 1.5 + "s";
+          h.style.animationDuration = 1.8 + Math.random() * 1.4 + "s";
+          container.appendChild(h);
+        }
+      }
+
+      function escapeNoButton() {
+        const btn = document.getElementById("btn-no");
+        const btnW = btn.offsetWidth || 60;
+        const btnH = btn.offsetHeight || 40;
+
+        // First click: capture viewport position, then move button to <body>
+        // so position:fixed is always relative to the viewport (not the
+        // transformed .secret-inner ancestor which breaks fixed positioning)
+        if (noBtnX === null) {
+          const rect = btn.getBoundingClientRect();
+          noBtnX = rect.left;
+          noBtnY = rect.top;
+          btn.style.position = "fixed";
+          btn.style.zIndex = "9999";
+          btn.style.left = noBtnX + "px";
+          btn.style.top = noBtnY + "px";
+          document.body.appendChild(btn);
+        }
+
+        // Tiny nudge: alternate left/right, small random vertical
+        noBtnX += (100 + Math.random() * 60) * noDir;
+        noBtnY += Math.random() * 80 - 40;
+
+        // Clamp strictly inside viewport
+        const pad = 12;
+        noBtnX = Math.max(
+          pad,
+          Math.min(window.innerWidth - btnW - pad, noBtnX),
+        );
+        noBtnY = Math.max(
+          pad,
+          Math.min(window.innerHeight - btnH - pad, noBtnY),
+        );
+
+        btn.style.left = noBtnX + "px";
+        btn.style.top = noBtnY + "px";
+
+        noDir *= -1;
+      }
+    </script>
+  </body>
+</html>
