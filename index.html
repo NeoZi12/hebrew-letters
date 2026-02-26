@@ -489,6 +489,9 @@
       .answer-btn:disabled {
         cursor: default;
       }
+      .answer-btn:focus {
+        outline: none;
+      }
 
       .answer-btn.correct {
         background: var(--correct);
@@ -1177,6 +1180,7 @@
           btn.dataset.name = options[i].name;
           btn.className = "answer-btn";
           btn.disabled = false;
+          btn.blur();
         });
 
         state.answered = false;
