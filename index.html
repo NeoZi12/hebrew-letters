@@ -1083,6 +1083,23 @@
       }
 
       function showScreen(id) {
+        // If navigating away from the secret screen, put the No button back
+        if (id !== "screen-secret") {
+          const btn = document.getElementById("btn-no");
+          const container = document.querySelector(".secret-answer-buttons");
+          if (btn && btn.parentElement !== container) {
+            container.appendChild(btn);
+          }
+          if (btn) {
+            btn.style.position = "";
+            btn.style.left = "";
+            btn.style.top = "";
+            btn.style.display = "";
+          }
+          noBtnX = null;
+          noBtnY = null;
+          noDir = 1;
+        }
         document
           .querySelectorAll(".screen")
           .forEach((s) => s.classList.remove("active"));
